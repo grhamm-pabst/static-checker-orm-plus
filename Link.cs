@@ -12,18 +12,20 @@ namespace Static_Checker
         private List<char> tokens;
         private Node nodeOrigin;
         private Node nodeDestination;
+        private bool anything;
 
-        public Link(Node nodeOrigin, Node nodeDestination, List<char> tokens, int scope)
+        public Link(Node nodeOrigin, Node nodeDestination, List<char> tokens, int scope, bool anything)
         {
             this.nodeOrigin = nodeOrigin;
             this.nodeDestination = nodeDestination;
             this.tokens = tokens;
             this.scope = scope;
+            this.anything = anything;
         }
 
         public bool checkValid(char token, int scope)
         {
-            return this.scope == scope && tokens.Contains(token);
+            return (this.scope == scope && tokens.Contains(token)) || anything;
         }
 
         public Tuple<Node, Node> getNodes()

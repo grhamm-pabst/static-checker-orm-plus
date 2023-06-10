@@ -21,7 +21,7 @@ namespace Static_Checker
             this.currentNode = this.startNode;
         }
 
-        public Tuple<Node, bool> goToNextNode(char token, int scope)
+        public Tuple<Node, bool> goToNextNode(char token, int scope, bool lineEnd)
         {
             Node? nextNode = this.currentNode.defineNextNode(token, scope);
             Tuple<Node, bool> result;
@@ -34,6 +34,11 @@ namespace Static_Checker
             } else
             {
                 this.currentNode = nextNode;
+                if (nextNode.getStateType() == "line-comment" && lineEnd)
+                {
+                    this.reset();
+                }
+                
                 result = new Tuple<Node, bool>(this.currentNode, false);
                 return result;
             }

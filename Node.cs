@@ -22,7 +22,12 @@ namespace Static_Checker
 
         public void addLink(Node nodeDestination, List<char> tokens, int scope)
         {
-            this.links.Add(new Link(this, nodeDestination, tokens, scope));
+            this.links.Add(new Link(this, nodeDestination, tokens, scope, false));
+        }
+
+        public void addLink(Node nodeDestination, List<char> tokens, int scope, bool anything)
+        {
+            this.links.Add(new Link(this, nodeDestination, tokens, scope, anything));
         }
 
         public Node? defineNextNode (char nextToken, int nextScope)
@@ -44,6 +49,11 @@ namespace Static_Checker
         public bool isAcceptance()
         {
             return this.acceptanceState;
+        }
+
+        public string getStateType()
+        {
+            return this.state_type;
         }
     }
 }
