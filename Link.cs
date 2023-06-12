@@ -30,7 +30,7 @@ namespace Static_Checker
 
         public Tuple<Node, Node> getNodes()
         {
-            return  Tuple.Create(nodeOrigin, nodeDestination);
+            return Tuple.Create(nodeOrigin, nodeDestination);
         }
 
         public Node getDestination()

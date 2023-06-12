@@ -21,25 +21,27 @@ namespace Static_Checker
             this.currentNode = this.startNode;
         }
 
-        public Tuple<Node, bool> goToNextNode(char token, int scope, bool lineEnd)
+        public (Node newNode, bool finished, bool isComment) goToNextNode(char token, int scope, bool lineEnd)
         {
             Node? nextNode = this.currentNode.defineNextNode(token, scope);
-            Tuple<Node, bool> result;
+            (Node newNode, bool finished, bool isComment) result;
 
             if (nextNode == null)
             {
-                result = new Tuple<Node, bool>(this.currentNode, true);
+                if (this.isCurrentNodeTheStartNode()) throw new Exception(token + " isn't a valid character");
+                result = (this.currentNode, true, this.currentNode.isComment());
                 this.reset();
                 return result;
             } else
             {
                 this.currentNode = nextNode;
-                if (nextNode.getStateType() == "line-comment" && lineEnd)
+                if ((nextNode.getStateType() == "line-comment" && lineEnd) || nextNode.getStateType() == "commentFinish")
                 {
                     this.reset();
                 }
                 
-                result = new Tuple<Node, bool>(this.currentNode, false);
+                result = (this.currentNode, false, nextNode.isComment());
+                Console.WriteLine(nextNode.getStateType());
                 return result;
             }
         }

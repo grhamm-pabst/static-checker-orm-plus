@@ -55,5 +55,10 @@ namespace Static_Checker
         {
             return this.state_type;
         }
+
+        public bool isComment()
+        {
+            return this.getStateType() == "comment" || this.getStateType() == "line-comment" || this.getStateType() == "commentFinish";
+        }
     }
 }

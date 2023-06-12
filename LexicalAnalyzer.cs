@@ -36,23 +36,52 @@ namespace Static_Checker
             this.lexicalResponse.fullLexeme = "";
         }
 
-        public void nextToken(char token, int scope)
+        public (LexicalResponse res, bool finished) nextToken(char token, int scope, bool lineEnd)
         {
-            Tuple<Node, bool> result = automaton.goToNextNode(token, scope);
+            (Node newNode, bool finished, bool isComment) result = automaton.goToNextNode(token, scope, lineEnd);
 
-            if (result.Item2)
+            if (!result.isComment)
             {
-                if (automaton.isCurrentNodeTheStartNode()) throw new Exception(token + " isn't a valid character");
-                
-                if (result.Item1.isAcceptance())
+                if (this.lexicalResponse.lexeme.Length < 30)
                 {
-                    
+                    this.lexicalResponse.lexeme += token;
+                    this.lexicalResponse.lengthBeforeTruncate = this.lexicalResponse.lexeme.Length;
                 }
+                else
+                {
+                    if(!result.newNode.isAcceptance() && this.lexicalResponse.fullLexeme.Length == 30)
+                    {
+                        throw new Exception("Lexeme was truncated before it was valid");
+                    }
+                    else
+                    {
+                        this.lexicalResponse.isAcceptedBeforeTruncate = true;
+                    }
+                }
+                this.lexicalResponse.fullLexeme += token;
+                this.lexicalResponse.lengthAfterTruncate = this.lexicalResponse.fullLexeme.Length;
             } else
             {
-
+                this.resetResponse();
             }
 
+            if (result.finished)
+            {
+                if (result.newNode.isAcceptance())
+                {
+                    this.lexicalResponse.isAcceptedAfterTruncate = true;
+                } else
+                {
+                    this.lexicalResponse.isAcceptedAfterTruncate = false;
+                }
+
+                LexicalResponse responseCopy = this.lexicalResponse;
+                this.resetResponse();
+
+                return (responseCopy, result.finished);
+            }
+
+            return (this.lexicalResponse, result.finished);
 
         }
     }
