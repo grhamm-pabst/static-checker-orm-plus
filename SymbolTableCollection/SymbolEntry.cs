@@ -16,6 +16,10 @@ namespace Static_Checker.SymbolTableCollection
         private readonly string lexemeType;
         private readonly List<int> lines = new List<int>();
 
+        public SymbolEntry(){
+            
+        }
+
         public SymbolEntry(int entryNumber, int code, string lexeme, int lengthBeforeTruncate, int lengthAfterTruncate, string lexemeType)
         {
             this.entryNumber = entryNumber;
