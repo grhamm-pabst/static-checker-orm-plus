@@ -11,7 +11,6 @@ namespace Static_Checker.SymbolTableCollection
     {
         private readonly List<SymbolEntry> entries;
         private int counter = 0;
-        private Random random;
 
         public SymbolTable(){
             entries = new List<SymbolEntry>();
