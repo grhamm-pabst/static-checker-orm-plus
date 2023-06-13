@@ -1,8 +1,8 @@
 using Static_Checker.LexemeTableCollection;
 
-internal class LexemeTableReportGenerator
+internal static class LexemeTableReportGenerator
     {
-        public void GenerateReport(LexemeTable lexemeTable, string outputPath)
+        public static void GenerateReport(LexemeTable lexemeTable, string outputPath)
         {
             using (StreamWriter writer = new StreamWriter(outputPath))
             {

@@ -47,6 +47,102 @@ namespace Static_Checker
             Node divisionNode = new Node(true, "/");
             startNode.addLink(divisionNode, new List<char>() { '/' }, 0);
 
+            //plus
+            Node plusSignNode = new Node(true, "+");
+            startNode.addLink(plusSignNode, new List<char>() { '+' }, 0);
+
+            //percent
+            Node percentSignNode = new Node(true, "%");
+            startNode.addLink(percentSignNode, new List<char>() { '%' }, 0);
+
+            //open-parenthesis
+            Node openParenthesisNode = new Node(true, "(");
+            startNode.addLink(openParenthesisNode, new List<char>() { '(' }, 0);
+
+            //closed-parenthesis
+            Node closedParenthesisNode = new Node(true, ")");
+            startNode.addLink(closedParenthesisNode, new List<char>() { ')' }, 0);
+
+            //comma
+            Node commaNode = new Node(true, ",");
+            startNode.addLink(commaNode, new List<char>() { ',' }, 0);
+
+            //double-dots
+            Node doubleDotsNode = new Node(true, ":");
+            startNode.addLink(doubleDotsNode, new List<char>() { ':' }, 0);
+            
+            //double-dots-equal
+            Node doubleDotsEqualNode = new Node(true, ":=");
+            doubleDotsNode.addLink(doubleDotsEqualNode, new List<char>() { '=' }, 0);
+
+            //dot-comma
+            Node dotCommaNode = new Node(true, ";");
+            startNode.addLink(dotCommaNode, new List<char>() { ';' }, 0);
+
+            //interrogation
+            Node interrogationNode = new Node(true, "?");
+            startNode.addLink(interrogationNode, new List<char>() { '?' }, 0);
+
+            //open-bracket
+            Node openBracketNode = new Node(true, "[");
+            startNode.addLink(openBracketNode, new List<char>() { '[' }, 0);
+
+            //closed-bracket
+            Node closedBracketNode = new Node(true, "]");
+            startNode.addLink(closedBracketNode, new List<char>() { ']' }, 0);
+
+            //open-curly-braces
+            Node openCurlyBraces = new Node(true, "{");
+            startNode.addLink(openCurlyBraces, new List<char>() { '{' }, 0);
+
+            //closed-curly-braces
+            Node closedCurlyBraces = new Node(true, "}");
+            startNode.addLink(closedCurlyBraces, new List<char>() { '}' }, 0);
+
+            //minus
+            Node minusNode = new Node(true, "-");
+            startNode.addLink(minusNode, new List<char>() { '-' }, 0);
+
+            //times
+            Node timesNode = new Node(true, "*");
+            startNode.addLink(timesNode, new List<char>() { '*' }, 0);
+
+            //exclamation
+            Node exclamationNode = new Node(false, "!");
+            startNode.addLink(exclamationNode, new List<char>() { '!' }, 0);
+
+            //different
+            Node differentNode = new Node(true, "!=");
+            exclamationNode.addLink(differentNode, new List<char>() { '=' }, 0);
+
+            //hashtag
+            Node hashtagNode = new Node(true, "#");
+            startNode.addLink(hashtagNode, new List<char>() { '#' }, 0);
+
+            //less-than
+            Node lessThanNode = new Node(true, "<");
+            startNode.addLink(lessThanNode, new List<char>() { '<' }, 0);
+
+            //less-than-or-equal-to
+            Node lessThanOfEqualToNode = new Node(true, "<=");
+            lessThanNode.addLink(lessThanOfEqualToNode, new List<char>() { '=' }, 0);
+
+            //equal
+            Node equalNode = new Node(false, "=");
+            startNode.addLink(equalNode, new List<char>() { '=' }, 0);
+
+            //equal-equal
+            Node equalEqualNode = new Node(true, "==");
+            equalNode.addLink(equalEqualNode, new List<char>() { '=' }, 0);
+
+            //more-than
+            Node moreThanNode = new Node(true, ">");
+            startNode.addLink(moreThanNode, new List<char>() { '>' }, 0);
+
+            //more-than-or-equal-to
+            Node moreThanOfEqualToNode = new Node(true, ">=");
+            moreThanNode.addLink(moreThanOfEqualToNode, new List<char>() { '=' }, 0);
+
             //block comment
             Node commentNode = new Node(false, "comment");
             divisionNode.addLink(commentNode, new List<char>() { '*' }, 0);
@@ -63,10 +159,6 @@ namespace Static_Checker
             Node lineCommentNode = new Node(false, "line-comment");
             divisionNode.addLink(lineCommentNode, new List<char>() { '/' }, 0);
             lineCommentNode.addLink(lineCommentNode, new List<char>(), 0, true);
-
-            //plus
-            Node plusSignNode = new Node(true, "+");
-            startNode.addLink(plusSignNode, new List<char>() { '+' }, 0);
 
             //cons-cadeia
             Node startStringNode = new Node(false, "cons-cadeia");

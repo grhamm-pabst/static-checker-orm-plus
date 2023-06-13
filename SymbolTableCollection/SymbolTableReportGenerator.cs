@@ -1,8 +1,8 @@
  namespace Static_Checker.SymbolTableCollection
 {
-    internal class SymbolTableReportGenerator
+    internal static class SymbolTableReportGenerator
     {
-        public void GenerateReport(SymbolTable symbolTable, string outputPath)
+        public static void GenerateReport(SymbolTable symbolTable, string outputPath)
         {
             using (StreamWriter writer = new StreamWriter(outputPath))
             {

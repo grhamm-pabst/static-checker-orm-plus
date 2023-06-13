@@ -15,6 +15,7 @@ namespace Static_Checker
         private SymbolTable symbolTable;
         private LexicalAnalyzer lexicalAnalyzer;
         private FileReader fileReader;
+        private Filter filter;
 
         private (int currentScope, int counterTilReset) scopeManager = (0, 0);
 
@@ -24,6 +25,7 @@ namespace Static_Checker
             this.lexemeTable = new LexemeTable();
             this.symbolTable = new SymbolTable();
             this.lexicalAnalyzer = new LexicalAnalyzer();
+            this.filter = new Filter();
         }
 
         private void updateScope(string type)
@@ -40,12 +42,15 @@ namespace Static_Checker
             }
         }
 
-        public void start()
+        public (SymbolTable, LexemeTable) start()
         {
             string? line;
+            int lineCounter = 0;
 
             while ((line = this.fileReader.nextLine()) != null)
             {
+                lineCounter++;
+                line = this.filter.filterFromString(line);
                 int len = line.Length;
                 for (int i = 0; i < len; i++)
                 {
@@ -65,15 +70,30 @@ namespace Static_Checker
                         }
 
                         updateScope(response.lexeme);
-                        Console.WriteLine(response.lexeme);
+
+                        symbolTable.push(response.lexeme, response.lengthBeforeTruncate, response.lengthAfterTruncate, response.lexemeType, lineCounter);
                     }
 
                 }
                 lexicalAnalyzer.forceEnd();
+
+                if (lexicalAnalyzer.getLexicalStack().Count > 0)
+                {
+                    LexicalResponse finalItem = this.lexicalAnalyzer.popFromLexicalStack();
+                    symbolTable.push(finalItem.lexeme, finalItem.lengthBeforeTruncate, finalItem.lengthAfterTruncate, finalItem.lexemeType, lineCounter);
+                }
             }
 
-            Console.ReadLine();
-            
+            for (int i = 0; i < this.symbolTable.numOfEntries(); i++)
+            {
+                SymbolEntry entry = this.symbolTable.findByIndex(i);
+                foreach (int apperance in entry.Lines)
+                {
+                    this.lexemeTable.push(entry.Lexeme, entry.Code, entry.EntryNumber, apperance);
+                }
+            }
+
+            return (this.symbolTable, this.lexemeTable);
         }
     }
 }

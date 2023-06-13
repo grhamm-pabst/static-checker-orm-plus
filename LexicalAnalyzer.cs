@@ -114,8 +114,8 @@ namespace Static_Checker
         {
             if (this.currentLexicalSubject.lexeme != "" && (this.automaton.getCurrentNode().isAcceptance() && this.currentLexicalSubject.isAcceptedBeforeTruncate))
             {
-                lexicalStack.Push(this.currentLexicalSubject);
                 this.currentLexicalSubject.isAcceptedAfterTruncate = true;
+                lexicalStack.Push(this.currentLexicalSubject);
                 this.resetResponse();
                 this.automaton.reset();
             }
