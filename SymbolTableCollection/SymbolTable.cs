@@ -9,8 +9,12 @@ namespace Static_Checker.SymbolTableCollection
 {
     internal class SymbolTable
     {
-        private readonly List<SymbolEntry> entries = new List<SymbolEntry>();
+        private readonly List<SymbolEntry> entries;
         private int counter = 0;
+
+        public SymbolTable(){
+            entries = new List<SymbolEntry>();
+        }
 
         public int push(int code, string lexeme, int lengthBeforeTruncate, int lengthAfterTruncate, string lexemeType, int line)
         {

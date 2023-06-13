@@ -10,6 +10,10 @@ namespace Static_Checker.LexemeTableCollection
     {
         private readonly List<LexemeEntry> entries = new List<LexemeEntry>();
 
+        public LexemeTable() {
+            entries = new List<LexemeEntry>();
+        }
+
         public void push(string lexeme, int code, int symbolTableId, int line)
         {
             entries.Add(new LexemeEntry(lexeme, code, symbolTableId, line));
