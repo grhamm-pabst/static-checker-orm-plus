@@ -25,8 +25,10 @@ namespace Static_Checker
 
         public bool checkValid(char token, int scope)
         {
-            return (this.scope == scope && tokens.Contains(token)) || anything;
+            return (this.scope == scope && tokens.Contains(token));
         }
+
+        public bool checkForAnything() { return anything; }
 
         public Tuple<Node, Node> getNodes()
         {

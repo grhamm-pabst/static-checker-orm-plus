@@ -10,9 +10,16 @@ namespace Static_Checker
     {
         public static Node build()
         {
-            Node startNode = new Node(false, "");
+            Node startNode = new Node(false, "start");
 
-            List<char> digits = new List<char>() { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            List<char> digits = Enumerable.Range('0', 10).Select(x => (char)x).ToList();
+            List<char> alphabet = Enumerable.Range('A', 26).Select(x => (char)x)
+            .Concat(Enumerable.Range('a', 26).Select(x => (char)x))
+            .ToList();
+
+            List<char> stringCharacters = alphabet.Concat(digits)
+            .Concat(new[] { '$', '_', '.', ' ' })
+            .ToList();
 
             //cons-inteiro
             Node consInteiroNode = new Node(true, "cons-inteiro");
@@ -48,14 +55,61 @@ namespace Static_Checker
             anythingNode.addLink(anythingNode, new List<char>(), 0, true);
             Node possibleCloseComment = new Node(false, "comment");
             anythingNode.addLink(possibleCloseComment, new List<char>() { '*' }, 0);
-            possibleCloseComment.addLink(anythingNode, new List<char>(), 0, true);
-            Node closeComment = new Node(false, "commentFinish");
+            Node closeComment = new Node(false, "comment-finish");
             possibleCloseComment.addLink(closeComment, new List<char>() { '/' }, 0);
+            possibleCloseComment.addLink(anythingNode, new List<char>(), 0, true);
 
             //line comment
             Node lineCommentNode = new Node(false, "line-comment");
             divisionNode.addLink(lineCommentNode, new List<char>() { '/' }, 0);
             lineCommentNode.addLink(lineCommentNode, new List<char>(), 0, true);
+
+            //plus
+            Node plusSignNode = new Node(true, "+");
+            startNode.addLink(plusSignNode, new List<char>() { '+' }, 0);
+
+            //cons-cadeia
+            Node startStringNode = new Node(false, "cons-cadeia");
+            startNode.addLink(startStringNode, new List<char>() { '"' }, 0);
+            Node stringContentNode = new Node(false, "cons-cadeia");
+            startStringNode.addLink(stringContentNode, stringCharacters, 0);
+            stringContentNode.addLink(stringContentNode, stringCharacters, 0);
+            Node endStringNode = new Node(true, "cons-cadeia");
+            startStringNode.addLink(endStringNode, new List<char>() { '"' }, 0);
+            stringContentNode.addLink(endStringNode, new List<char>() { '"' }, 0);
+
+            //cons-caracter
+            Node startCharNode = new Node(false, "cons-caracter");
+            startNode.addLink(startCharNode, new List<char>() { '\'' }, 0);
+            Node contentCharNode = new Node(false, "cons-caracter");
+            startCharNode.addLink(contentCharNode, alphabet, 0);
+            Node endCharNode = new Node(true, "cons-caracter");
+            startCharNode.addLink(endCharNode, new List<char>() { '\'' }, 0);
+            contentCharNode.addLink(endCharNode, new List<char>() { '\'' }, 0);
+
+            //variavel
+            Node variableNode = new Node(true, "variavel");
+            startNode.addLink(variableNode, alphabet.Concat(new List<char>() { '_' }).ToList(), 0);
+            variableNode.addLink(variableNode, alphabet.Concat(digits).Concat(new List<char>() { '_' }).ToList(), 0);
+
+            //palavra-reservada
+            Node reservedWordNode = new Node(false, "palavra-reservada");
+            variableNode.addLink(reservedWordNode, new List<char>() { '-' }, 0);
+            Node reservedWordPostDashNode = new Node(true, "palavra-reservada");
+            reservedWordNode.addLink(reservedWordPostDashNode, alphabet, 0);
+            reservedWordPostDashNode.addLink(reservedWordPostDashNode, alphabet, 0);
+
+            //nom-funcao
+            Node funcNode = new Node(true, "nom-funcao");
+            startNode.addLink(funcNode, alphabet, 1);
+            funcNode.addLink(funcNode, alphabet.Concat(digits).ToList(), 1);
+
+            //nom-programa
+            Node progNode = new Node(true, "nom-programa");
+            startNode.addLink(progNode, alphabet, 2);
+            progNode.addLink(progNode, alphabet.Concat(digits).ToList(), 2);
+
+            
 
             return startNode;
         }
