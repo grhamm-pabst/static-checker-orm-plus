@@ -113,7 +113,12 @@ namespace Static_Checker
         public void forceEnd ()
         {
             if (this.currentLexicalSubject.lexeme != "" && (this.automaton.getCurrentNode().isAcceptance() && this.currentLexicalSubject.isAcceptedBeforeTruncate))
+            {
                 lexicalStack.Push(this.currentLexicalSubject);
+                this.currentLexicalSubject.isAcceptedAfterTruncate = true;
+                this.resetResponse();
+                this.automaton.reset();
+            }
         }
     }
 }

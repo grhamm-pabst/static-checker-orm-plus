@@ -11,54 +11,69 @@ namespace Static_Checker
 {
     internal class SyntaxAnalyzer
     {
-        private LexemeTable lexemeTable = new LexemeTable();
-        private SymbolTable symbolTable = new SymbolTable();
-        private LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
+        private LexemeTable lexemeTable;
+        private SymbolTable symbolTable;
+        private LexicalAnalyzer lexicalAnalyzer;
+        private FileReader fileReader;
 
         private (int currentScope, int counterTilReset) scopeManager = (0, 0);
 
-        public SyntaxAnalyzer() { }
+        public SyntaxAnalyzer(string? path)
+        {
+            this.fileReader = new FileReader(path);
+            this.lexemeTable = new LexemeTable();
+            this.symbolTable = new SymbolTable();
+            this.lexicalAnalyzer = new LexicalAnalyzer();
+        }
 
         private void updateScope(string type)
         {
             if (type == "tipo-func")
             {
-                scopeManager.counterTilReset = 2;
-                scopeManager.currentScope = 1;
+                this.scopeManager.counterTilReset = 2;
+                this.scopeManager.currentScope = 1;
             }
             if (type == "programa")
             {
-                scopeManager.counterTilReset = 1;
-                scopeManager.currentScope = 2;
+                this.scopeManager.counterTilReset = 1;
+                this.scopeManager.currentScope = 2;
             }
         }
 
         public void start()
         {
-            string str = "123+123.45 /* dasdasdasdas */ \"\" umavariavel tipo-var  \'a\' //dfasofgasdgas  gasdgasgasgasd ggasdgasd";
-            int len = str.Length;
+            string? line;
 
-            for (int i = 0; i < len; i++)
+            while ((line = this.fileReader.nextLine()) != null)
             {
-                lexicalAnalyzer.nextToken(str[i], 0, i == len - 1);
-
-                if (lexicalAnalyzer.getLexicalStack().Count > 0)
+                int len = line.Length;
+                for (int i = 0; i < len; i++)
                 {
-                    LexicalResponse response = this.lexicalAnalyzer.popFromLexicalStack();
+                    lexicalAnalyzer.nextToken(line[i], this.scopeManager.currentScope, i == len - 1);
 
-                    updateScope(response.lexeme);
-
-                    if (scopeManager.counterTilReset == 1)
+                    if (lexicalAnalyzer.getLexicalStack().Count > 0)
                     {
+                        LexicalResponse response = this.lexicalAnalyzer.popFromLexicalStack();
 
+                        if (this.scopeManager.counterTilReset > 0)
+                        {
+                            this.scopeManager.counterTilReset--;
+                            if (this.scopeManager.counterTilReset == 0)
+                            {
+                                this.scopeManager.currentScope = 0;
+                            }
+                        }
+
+                        updateScope(response.lexeme);
+                        Console.WriteLine(response.lexeme);
                     }
-                    
-                    Console.WriteLine("!" + response.lexeme + "!" + " - " + response.lexemeType);
-                }
 
+                }
+                lexicalAnalyzer.forceEnd();
             }
 
-            lexicalAnalyzer.forceEnd();
+            Console.ReadLine();
+            
         }
     }
 }

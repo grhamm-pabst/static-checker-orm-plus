@@ -8,32 +8,30 @@ namespace Static_Checker
     {
         private StreamReader reader;
 
-        public FileReader(string filePath, string nameFile)
+        public FileReader(string? path)
         {
-            this.reader = OpenFile(filePath, nameFile);
+            this.reader = OpenFile(path);
         }
 
-        public StreamReader OpenFile(string filePath, string nameFile)
+        public StreamReader OpenFile(string? path)
         {
+            if (path == null) throw new ArgumentNullException("path");
+
+            if (!path.EndsWith(".231")) throw new Exception("O tipo do arquivo não é permitido");
             string fullPath;
 
-            if (string.IsNullOrEmpty(filePath))
+            if (!Path.IsPathRooted(path))
             {
-                // Caso o filePath seja nulo ou vazio, considera-se que é para ler o arquivo do diretório do projeto
-                if (string.IsNullOrEmpty(nameFile))
-                {
-                    throw new ArgumentException("O nome do arquivo não pode ser vazio ou nulo.");
-                }
 
-                string projectDirectory = Directory.GetCurrentDirectory();
-                fullPath = Path.Combine(projectDirectory, nameFile);
+                string? projectDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
+                if (projectDirectory == null) throw new Exception("Erro inesperado na obtenção do arquivo");
+                fullPath = Path.Combine(projectDirectory, path);
             }
             else
             {
-                fullPath = filePath;
+                fullPath = path;
             }
 
-            // Verifica se o arquivo existe
             if (!File.Exists(fullPath))
             {
                 throw new FileNotFoundException("O arquivo especificado não foi encontrado.", fullPath);
@@ -43,11 +41,10 @@ namespace Static_Checker
 
             try
             {
-               return new StreamReader(filePath);                
+               return new StreamReader(fullPath);                
             }
             catch (Exception e)
             {
-                // Trate a exceção de leitura do arquivo conforme sua necessidade
                 throw new FileLoadException($"Ocorreu um erro ao ler o arquivo: {e.Message}");
             }
         }

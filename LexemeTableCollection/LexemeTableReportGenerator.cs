@@ -4,10 +4,6 @@ internal class LexemeTableReportGenerator
     {
         public void GenerateReport(LexemeTable lexemeTable, string outputPath)
         {
-            // Lógica para gerar o relatório .LEX
-            // Você pode percorrer a tabela de léxicos e criar um arquivo de texto com as informações
-            // relevantes de cada entrada
-
             using (StreamWriter writer = new StreamWriter(outputPath))
             {
                 writer.WriteLine("Código da Equipe: 05");

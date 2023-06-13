@@ -4,10 +4,6 @@
     {
         public void GenerateReport(SymbolTable symbolTable, string outputPath)
         {
-            // Lógica para gerar o relatório .TAB
-            // Você pode percorrer a tabela de símbolos e criar um arquivo de texto com as informações
-            // relevantes de cada entrada
-
             using (StreamWriter writer = new StreamWriter(outputPath))
             {
 

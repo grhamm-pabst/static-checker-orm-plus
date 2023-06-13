@@ -1,5 +1,6 @@
 ﻿using Static_Checker;
 
-SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer();
+string? path = Console.ReadLine();
+SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(path);
 
 syntaxAnalyzer.start();
