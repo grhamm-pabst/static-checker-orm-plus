@@ -18,14 +18,21 @@ namespace Static_Checker
 
         public void start()
         {
-            string str = "123 123.45";
+            string str = "123+ 123.45 \"ablubluble $\"";
             int len = str.Length;
 
-            for(int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++)
             {
-                (LexicalResponse lexResponse, bool finished) response = lexicalAnalyzer.nextToken(str[i], 0, i == len - 1);
-                Console.WriteLine(response.lexResponse.fullLexeme);
-                Console.WriteLine(response.lexResponse.isAcceptedBeforeTruncate);
+                lexicalAnalyzer.nextToken(str[i], 0, i == len - 1);
+
+
+            }
+
+            lexicalAnalyzer.forceEnd();
+
+            foreach (LexicalResponse response in lexicalAnalyzer.getLexicalStack())
+            {
+                Console.WriteLine("!" + response.lexeme + "!");
             }
         }
     }

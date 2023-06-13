@@ -10,9 +10,16 @@ namespace Static_Checker
     {
         public static Node build()
         {
-            Node startNode = new Node(false, "");
+            Node startNode = new Node(false, "start");
 
-            List<char> digits = new List<char>() { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            List<char> digits = Enumerable.Range('0', 10).Select(x => (char)x).ToList();
+            List<char> alphabet = Enumerable.Range('A', 26).Select(x => (char)x)
+            .Concat(Enumerable.Range('a', 26).Select(x => (char)x))
+            .ToList();
+
+            List<char> stringCharacters = alphabet.Concat(digits)
+            .Concat(new[] { '$', '_', '.', ' ' })
+            .ToList();
 
             //cons-inteiro
             Node consInteiroNode = new Node(true, "cons-inteiro");
@@ -56,6 +63,19 @@ namespace Static_Checker
             Node lineCommentNode = new Node(false, "line-comment");
             divisionNode.addLink(lineCommentNode, new List<char>() { '/' }, 0);
             lineCommentNode.addLink(lineCommentNode, new List<char>(), 0, true);
+
+            //plus
+            Node plusSignNode = new Node(true, "+");
+            startNode.addLink(plusSignNode, new List<char>() { '+' }, 0);
+
+            //cons-cadeia
+            Node startStringNode = new Node(false, "cons-cadeia");
+            startNode.addLink(startStringNode, new List<char>() { '"' }, 0);
+            Node stringContentNode = new Node(false, "cons-cadeia");
+            startStringNode.addLink(stringContentNode, stringCharacters, 0);
+            stringContentNode.addLink(stringContentNode, stringCharacters, 0);
+            Node endStringNode = new Node(true, "cons-cadeia");
+            stringContentNode.addLink(endStringNode, new List<char>() { '"' }, 0);
 
             return startNode;
         }

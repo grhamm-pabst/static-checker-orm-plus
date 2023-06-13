@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,9 @@ namespace Static_Checker
     {
         private Automaton automaton = new Automaton();
 
-        private LexicalResponse lexicalResponse = new LexicalResponse();
+        private LexicalResponse currentLexicalSubject = new LexicalResponse();
+
+        private List<LexicalResponse> lexicalStack = new List<LexicalResponse>();
 
         public LexicalAnalyzer()
         {
@@ -28,61 +31,78 @@ namespace Static_Checker
 
         private void resetResponse()
         {
-            this.lexicalResponse.lengthBeforeTruncate = 0;
-            this.lexicalResponse.lengthAfterTruncate = 0;
-            this.lexicalResponse.isAcceptedBeforeTruncate = false;
-            this.lexicalResponse.isAcceptedAfterTruncate = false;
-            this.lexicalResponse.lexeme = "";
-            this.lexicalResponse.fullLexeme = "";
+            this.currentLexicalSubject.lengthBeforeTruncate = 0;
+            this.currentLexicalSubject.lengthAfterTruncate = 0;
+            this.currentLexicalSubject.isAcceptedBeforeTruncate = false;
+            this.currentLexicalSubject.isAcceptedAfterTruncate = false;
+            this.currentLexicalSubject.lexeme = "";
+            this.currentLexicalSubject.fullLexeme = "";
         }
 
-        public (LexicalResponse res, bool finished) nextToken(char token, int scope, bool lineEnd)
-        {
-            (Node newNode, bool finished, bool isComment) result = automaton.goToNextNode(token, scope, lineEnd);
+        public List<LexicalResponse> getLexicalStack() { return this.lexicalStack; }
 
-            if (!result.isComment)
+        public void feedSubject(char token, bool acceptance)
+        {
+            if (this.currentLexicalSubject.lexeme.Length < 30)
             {
-                if (this.lexicalResponse.lexeme.Length < 30)
+                this.currentLexicalSubject.lexeme += token;
+                this.currentLexicalSubject.lengthBeforeTruncate++;
+                this.currentLexicalSubject.isAcceptedBeforeTruncate = acceptance;
+            }
+            this.currentLexicalSubject.fullLexeme += token;
+            this.currentLexicalSubject.lengthAfterTruncate++;
+        }
+
+        public void nextToken(char token, int scope, bool lineEnd)
+        {
+            if ((this.automaton.getCurrentNode().getStateType() == "lineComment" && lineEnd) || this.automaton.getCurrentNode().getStateType() == "commentFinish")
+            {
+                this.resetResponse();
+                this.automaton.reset();
+            }
+
+            Node? nextNode = this.automaton.feed(token, scope);
+
+
+            if (nextNode == null)
+            {
+                if (this.automaton.getCurrentNode().isAcceptance() && this.currentLexicalSubject.isAcceptedBeforeTruncate)
                 {
-                    this.lexicalResponse.lexeme += token;
-                    this.lexicalResponse.lengthBeforeTruncate = this.lexicalResponse.lexeme.Length;
+                    this.currentLexicalSubject.isAcceptedAfterTruncate = true;
+                    lexicalStack.Add(this.currentLexicalSubject);
+                    this.resetResponse();
                 }
                 else
                 {
-                    if(!result.newNode.isAcceptance() && this.lexicalResponse.fullLexeme.Length == 30)
-                    {
-                        throw new Exception("Lexeme was truncated before it was valid");
-                    }
-                    else
-                    {
-                        this.lexicalResponse.isAcceptedBeforeTruncate = true;
-                    }
+                    throw new Exception(this.currentLexicalSubject.lexeme + " Lexeme was wrongly interrupted");
                 }
-                this.lexicalResponse.fullLexeme += token;
-                this.lexicalResponse.lengthAfterTruncate = this.lexicalResponse.fullLexeme.Length;
-            } else
-            {
-                this.resetResponse();
-            }
+                this.automaton.reset();
+                Node? newLexemeNode = this.automaton.feed(token, scope);
+                if (newLexemeNode == null)
+                {
+                    if (token != ' ')
+                    throw new Exception(token + " is a invalid token");
 
-            if (result.finished)
-            {
-                if (result.newNode.isAcceptance())
+                    this.automaton.reset();
+                }
+                else
                 {
-                    this.lexicalResponse.isAcceptedAfterTruncate = true;
-                } else
-                {
-                    this.lexicalResponse.isAcceptedAfterTruncate = false;
+                    this.feedSubject(token, newLexemeNode.isAcceptance());
+                    this.automaton.setCurrentNode(newLexemeNode);
                 }
 
-                LexicalResponse responseCopy = this.lexicalResponse;
-                this.resetResponse();
-
-                return (responseCopy, result.finished);
             }
+            else
+            {
+                this.feedSubject(token, nextNode.isAcceptance());
+                this.automaton.setCurrentNode(nextNode);
 
-            return (this.lexicalResponse, result.finished);
+            }
+        }
 
+        public void forceEnd ()
+        {
+            lexicalStack.Add(this.currentLexicalSubject);
         }
     }
 }
