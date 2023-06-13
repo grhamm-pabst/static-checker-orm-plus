@@ -3,6 +3,7 @@ using Static_Checker.LexemeTableCollection;
 using Static_Checker.SymbolTableCollection;
 
 string? path = Console.ReadLine();
+
 SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(path);
 
 (SymbolTable symbolTable, LexemeTable lexemeTable) tables = syntaxAnalyzer.start();
