@@ -39,7 +39,12 @@ namespace Static_Checker
 
             if (link == null)
             {
-                return null;
+                Link? anythingLink = this.links.Find(delegate (Link link)
+                {
+                    return link.checkForAnything();
+                });
+                if (anythingLink == null) return null;
+                else return anythingLink.getDestination();
             } else
             {
                 return link.getDestination();

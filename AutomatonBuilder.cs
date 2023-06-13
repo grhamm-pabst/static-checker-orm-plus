@@ -55,9 +55,9 @@ namespace Static_Checker
             anythingNode.addLink(anythingNode, new List<char>(), 0, true);
             Node possibleCloseComment = new Node(false, "comment");
             anythingNode.addLink(possibleCloseComment, new List<char>() { '*' }, 0);
-            possibleCloseComment.addLink(anythingNode, new List<char>(), 0, true);
-            Node closeComment = new Node(false, "commentFinish");
+            Node closeComment = new Node(false, "comment-finish");
             possibleCloseComment.addLink(closeComment, new List<char>() { '/' }, 0);
+            possibleCloseComment.addLink(anythingNode, new List<char>(), 0, true);
 
             //line comment
             Node lineCommentNode = new Node(false, "line-comment");
@@ -75,7 +75,41 @@ namespace Static_Checker
             startStringNode.addLink(stringContentNode, stringCharacters, 0);
             stringContentNode.addLink(stringContentNode, stringCharacters, 0);
             Node endStringNode = new Node(true, "cons-cadeia");
+            startStringNode.addLink(endStringNode, new List<char>() { '"' }, 0);
             stringContentNode.addLink(endStringNode, new List<char>() { '"' }, 0);
+
+            //cons-caracter
+            Node startCharNode = new Node(false, "cons-caracter");
+            startNode.addLink(startCharNode, new List<char>() { '\'' }, 0);
+            Node contentCharNode = new Node(false, "cons-caracter");
+            startCharNode.addLink(contentCharNode, alphabet, 0);
+            Node endCharNode = new Node(true, "cons-caracter");
+            startCharNode.addLink(endCharNode, new List<char>() { '\'' }, 0);
+            contentCharNode.addLink(endCharNode, new List<char>() { '\'' }, 0);
+
+            //variavel
+            Node variableNode = new Node(true, "variavel");
+            startNode.addLink(variableNode, alphabet.Concat(new List<char>() { '_' }).ToList(), 0);
+            variableNode.addLink(variableNode, alphabet.Concat(digits).Concat(new List<char>() { '_' }).ToList(), 0);
+
+            //palavra-reservada
+            Node reservedWordNode = new Node(false, "palavra-reservada");
+            variableNode.addLink(reservedWordNode, new List<char>() { '-' }, 0);
+            Node reservedWordPostDashNode = new Node(true, "palavra-reservada");
+            reservedWordNode.addLink(reservedWordPostDashNode, alphabet, 0);
+            reservedWordPostDashNode.addLink(reservedWordPostDashNode, alphabet, 0);
+
+            //nom-funcao
+            Node funcNode = new Node(true, "nom-funcao");
+            startNode.addLink(funcNode, alphabet, 1);
+            funcNode.addLink(funcNode, alphabet.Concat(digits).ToList(), 1);
+
+            //nom-programa
+            Node progNode = new Node(true, "nom-programa");
+            startNode.addLink(progNode, alphabet, 2);
+            progNode.addLink(progNode, alphabet.Concat(digits).ToList(), 2);
+
+            
 
             return startNode;
         }
