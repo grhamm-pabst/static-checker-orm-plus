@@ -50,7 +50,7 @@ namespace Static_Checker
 
         public void feedSubject(char token, bool acceptance, string nodeType)
         {
-            if (this.currentLexicalSubject.lexeme.Length < 30)
+            if (this.currentLexicalSubject.lexeme.Length < 30 || (nodeType != "cons-cadeia" || nodeType != "cons-real" || nodeType != "cons-inteiro"))
             {
                 this.currentLexicalSubject.lexeme += token;
                 this.currentLexicalSubject.lengthBeforeTruncate++;

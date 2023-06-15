@@ -2,7 +2,7 @@ using Static_Checker.LexemeTableCollection;
 
 internal static class LexemeTableReportGenerator
     {
-        public static void GenerateReport(LexemeTable lexemeTable, string outputPath)
+        public static void GenerateReport(LexemeTable lexemeTable, string outputPath, string path)
         {
             using (StreamWriter writer = new StreamWriter(outputPath))
             {
@@ -15,7 +15,7 @@ internal static class LexemeTableReportGenerator
 
                 writer.WriteLine();
 
-                writer.WriteLine("RELATÓRIO DA ANÁLISE LÉXICA. Texto fonte analisado: Teste.231");
+                writer.WriteLine("RELATÓRIO DA ANÁLISE LÉXICA. Texto fonte analisado: " + path);
                 writer.WriteLine("----------------------------------------------------------------");
                 writer.WriteLine();
 

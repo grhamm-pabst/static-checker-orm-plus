@@ -2,7 +2,7 @@
 {
     internal static class SymbolTableReportGenerator
     {
-        public static void GenerateReport(SymbolTable symbolTable, string outputPath)
+        public static void GenerateReport(SymbolTable symbolTable, string outputPath, string path)
         {
             using (StreamWriter writer = new StreamWriter(outputPath))
             {
@@ -16,14 +16,17 @@
 
                 writer.WriteLine();
 
-                writer.WriteLine("RELATÓRIO DA TABELA DE SÍMBOLOS. Texto fonte analisado: Teste.231");
+                writer.WriteLine("RELATÓRIO DA TABELA DE SÍMBOLOS. Texto fonte analisado: " + path);
                 
                 for (int i = 0; i < symbolTable.numOfEntries();i++){
                     SymbolEntry entry = symbolTable.findByIndex(i);
-                    writer.WriteLine($"Entrada: {entry.EntryNumber}, Código: {entry.Code}, Lexeme: {entry.Lexeme},");
-                    writer.WriteLine($"QtdCharAntesTrunc: {entry.LengthBeforeTruncate}, QtdCharDepoisTrunc: {entry.LengthAfterTruncate},");
-                    writer.WriteLine($"TipoSimb: {entry.LexemeType}, Lines: {string.Join(", ", entry.Lines)}");
-                    writer.WriteLine("----------------------------------------------------------------");
+                    if (entry.Lines.Count > 0)
+                    {
+                        writer.WriteLine($"Entrada: {entry.EntryNumber}, Código: {entry.Code}, Lexeme: {entry.Lexeme},");
+                        writer.WriteLine($"QtdCharAntesTrunc: {entry.LengthBeforeTruncate}, QtdCharDepoisTrunc: {entry.LengthAfterTruncate},");
+                        writer.WriteLine($"TipoSimb: {entry.LexemeType}, Lines: {string.Join(", ", entry.Lines)}");
+                        writer.WriteLine("----------------------------------------------------------------");
+                    }
                 }
             }
         }

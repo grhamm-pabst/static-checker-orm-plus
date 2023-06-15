@@ -8,7 +8,7 @@ namespace Static_Checker
 {
     internal class Filter
     {
-        public List<char> validCharacters = new List<char>() { '_', ' ', '$', '%', '=', '>', '<', '!', '#', '?', ';', ':', ',', '{', '}', '[', ']', '(', ')', '*', '-', '+', '/' };
+        public List<char> validCharacters = new List<char>() { '_', ' ', '$', '%', '=', '>', '<', '!', '#', '?', ';', ':', ',', '{', '}', '[', ']', '(', ')', '*', '-', '+', '/', '.' };
 
         public bool isValid(char c)
         {

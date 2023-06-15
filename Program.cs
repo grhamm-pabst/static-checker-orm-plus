@@ -10,6 +10,6 @@ SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(path);
 
 if (path != null)
 {
-    LexemeTableReportGenerator.GenerateReport(tables.lexemeTable, path.Replace(".231", ".LEX"));
-    SymbolTableReportGenerator.GenerateReport(tables.symbolTable, path.Replace(".231", ".TAB"));
+    LexemeTableReportGenerator.GenerateReport(tables.lexemeTable, path.Replace(".231", ".LEX"), path);
+    SymbolTableReportGenerator.GenerateReport(tables.symbolTable, path.Replace(".231", ".TAB"), path);
 }
