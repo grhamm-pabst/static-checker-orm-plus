@@ -75,8 +75,7 @@ namespace Static_Checker
                 }
                 else
                 {
-                    if (token != ' ')
-                        throw new Exception(this.currentLexicalSubject.lexeme + " Lexeme was wrongly interrupted");
+                    ErrorManager.throwError($"O Lexeme {this.currentLexicalSubject.lexeme} foi interrompido antes do estado de aceitação");
                 }
 
                 this.automaton.reset();
@@ -85,7 +84,7 @@ namespace Static_Checker
                 if (newLexemeNode == null)
                 {
                     if (token != ' ')
-                    throw new Exception(token + " is a invalid token");
+                        ErrorManager.throwError($"O token {token} é invalido");
 
                     this.automaton.reset();
                 }
@@ -103,7 +102,7 @@ namespace Static_Checker
 
             }
 
-            if ((this.automaton.getCurrentNode().getStateType() == "line-comment" && lineEnd) || this.automaton.getCurrentNode().getStateType() == "comment-finish")
+            if ((this.automaton.getCurrentNode().getStateType() == "line-comment" && lineEnd) || this.automaton.getCurrentNode().getStateType() == "comment-finish" || this.automaton.getCurrentNode().getStateType() == "space")
             {
                 this.resetResponse();
                 this.automaton.reset();

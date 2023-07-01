@@ -12,6 +12,11 @@ namespace Static_Checker
         {
             Node startNode = new Node(false, "start");
 
+            //tratamento do espaço em branco
+            Node spaceNode = new Node(false, "space");
+            startNode.addLink(spaceNode, new List<char>() { ' ' }, 0);
+            spaceNode.addLink(spaceNode, new List<char>() { ' ' }, 0);
+
             List<char> digits = Enumerable.Range('0', 10).Select(x => (char)x).ToList();
             List<char> alphabet = Enumerable.Range('A', 26).Select(x => (char)x)
             .Concat(Enumerable.Range('a', 26).Select(x => (char)x))

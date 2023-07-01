@@ -15,17 +15,17 @@ namespace Static_Checker
 
         public StreamReader OpenFile(string? path)
         {
-            if (path == null) throw new ArgumentNullException("path");
+            if (path == null || path == "") ErrorManager.throwError("O path está vazio");
 
-            if (!path.EndsWith(".231")) throw new Exception("O tipo do arquivo não é permitido");
-            string fullPath;
+            if (!path.EndsWith(".231")) ErrorManager.throwError("O tipo do arquivo não é permitido");
+            string fullPath = "";
 
             if (!Path.IsPathRooted(path))
             {
 
                 string? projectDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
-                if (projectDirectory == null) throw new Exception("Erro inesperado na obtenção do arquivo");
-                fullPath = Path.Combine(projectDirectory, path);
+                if (projectDirectory == null) ErrorManager.throwError("Erro inesperado na obtenção do arquivo");
+                else fullPath = Path.Combine(projectDirectory, path);
             }
             else
             {
@@ -34,7 +34,7 @@ namespace Static_Checker
 
             if (!File.Exists(fullPath))
             {
-                throw new FileNotFoundException("O arquivo especificado não foi encontrado.", fullPath);
+                ErrorManager.throwError($"{fullPath} não foi encontrado");
             }
 
             List<string> lines = new List<string>();
@@ -45,7 +45,8 @@ namespace Static_Checker
             }
             catch (Exception e)
             {
-                throw new FileLoadException($"Ocorreu um erro ao ler o arquivo: {e.Message}");
+                ErrorManager.throwError($"Ocorreu um erro ao ler o arquivo: {e.Message}");
+                throw new Exception();
             }
         }
 
